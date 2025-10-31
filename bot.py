@@ -100,7 +100,7 @@ def main():
                 send_message(chat_id, "Salom! Botga xush kelibsiz 😊")
                 continue
 
-            # boshqa barcha xabar turlari
+            # Echo: send back exactly what was received (text, photo, video, audio, voice, document, contact, dice)
             if "text" in msg:
                 send_message(chat_id, msg["text"])
             elif "photo" in msg:
