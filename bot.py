@@ -86,10 +86,12 @@ def main():
 
         for update in updates:
             msg = update.get("message", {})
+            if "chat" not in msg:
+                continue 
             chat_id = msg["chat"]["id"]
             offset = update["update_id"] + 1
 
-            # /start komandasi
+            
             if "text" in msg and msg["text"] == "/start":
                 user = {
                     "id": chat_id,
@@ -100,9 +102,25 @@ def main():
                 send_message(chat_id, "Salom! Botga xush kelibsiz 😊")
                 continue
 
-            # Echo: send back exactly what was received (text, photo, video, audio, voice, document, contact, dice)
+           
             if "text" in msg:
-                send_message(chat_id, msg["text"])
+                
+                if msg["chat"]["type"] == "group" or msg["chat"]["type"] == "supergroup":
+                    bot_username = None
+                    try:
+                        
+                        from config import BOT_USERNAME
+                        bot_username = BOT_USERNAME
+                    except:
+                        pass
+                    if bot_username:
+                        if f"@{bot_username}" in msg["text"] or msg.get("reply_to_message", {}).get("from", {}).get("username") == bot_username:
+                            send_message(chat_id, msg["text"])
+                    else:
+                        
+                        send_message(chat_id, msg["text"])
+                else:
+                    send_message(chat_id, msg["text"])
             elif "photo" in msg:
                 send_photo(chat_id, msg["photo"][-1]["file_id"])
             elif "video" in msg:
